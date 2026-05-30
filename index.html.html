@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Gestão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root {
+  --bg: #F7F6F2;
+  --surface: #FFFFFF;
+  --surface2: #F0EFE9;
+  --border: rgba(0,0,0,0.09);
+  --border2: rgba(0,0,0,0.15);
+  --text: #1A1917;
+  --text2: #6B6960;
+  --text3: #A8A69E;
+  --blue: #185FA5;
+  --blue-bg: #E6F1FB;
+  --blue-mid: #378ADD;
+  --teal: #0F6E56;
+  --teal-bg: #E1F5EE;
+  --teal-mid: #1D9E75;
+  --amber: #854F0B;
+  --amber-bg: #FAEEDA;
+  --red: #A32D2D;
+  --red-bg: #FCEBEB;
+  --green: #3B6D11;
+  --green-bg: #EAF3DE;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+/* Layout */
+.app { max-width: 760px; margin: 0 auto; padding: 24px 16px 60px; }
+/* Header */
+.header { margin-bottom: 28px; }
+.header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-dot { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.logo-dot.blue { background: var(--blue-bg); color: var(--blue); }
+.logo-dot.teal { background: var(--teal-bg); color: var(--teal); }
+.header h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+.header-date { font-size: 13px; color: var(--text2); margin-top: 4px; }
+/* Tabs */
+.tabs { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px; gap: 4px; margin-bottom: 24px; box-shadow: var(--shadow); }
+.tab { flex: 1; padding: 9px 12px; border: none; background: none; border-radius: var(--radius-sm); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--text2); transition: all .15s; display: flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; }
+.tab i { font-size: 15px; }
+.tab:hover { background: var(--surface2); color: var(--text); }
+.tab.active-blue { background: var(--blue-bg); color: var(--blue); }
+.tab.active-teal { background: var(--teal-bg); color: var(--teal); }
+/* Panel */
+.panel { display: none; animation: fadeIn .2s ease; }
+.panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+.stat-num { font-size: 26px; font-weight: 600; font-family: 'DM Mono', monospace; letter-spacing: -1px; }
+.stat-num.blue { color: var(--blue); }
+.stat-num.teal { color: var(--teal); }
+.stat-label { font-size: 11px; color: var(--text3); margin-top: 3px; text-transform: uppercase; letter-spacing: .04em; font-weight: 500; }
+/* Section title */
+.sec-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; margin-top: 24px; display: flex; align-items: center; gap: 6px; }
+.sec-title:first-of-type { margin-top: 0; }
+/* Task group */
+.task-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 8px; }
+.task-group-head { padding: 10px 14px; font-size: 12px; font-weight: 600; color: var(--text2); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; background: var(--surface2); }
+.task-group-head i { font-size: 14px; }
+.task-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); transition: background .1s; }
+.task-row:last-child { border-bottom: none; }
+.task-row:hover { background: var(--surface2); }
+.task-row.done .task-name { text-decoration: line-through; color: var(--text3); }
+.task-name { flex: 1; font-size: 13px; line-height: 1.4; }
+.badge { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+.badge-blue { background: var(--blue-bg); color: var(--blue); }
+.badge-teal { background: var(--teal-bg); color: var(--teal); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); }
+.badge-red { background: var(--red-bg); color: var(--red); }
+.badge-green { background: var(--green-bg); color: var(--green); }
+/* Check button */
+.btn-check { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border2); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s; color: transparent; font-size: 12px; }
+.btn-check:hover { border-color: var(--blue-mid); }
+.btn-check.on-blue { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
+.btn-check.on-teal { background: var(--teal-bg); border-color: var(--teal); color: var(--teal); }
+/* Del button */
+.btn-del { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 15px; padding: 3px; border-radius: 6px; display: flex; align-items: center; transition: all .15s; flex-shrink: 0; }
+.btn-del:hover { color: var(--red); background: var(--red-bg); }
+/* Empty state */
+.empty { padding: 16px 14px; font-size: 13px; color: var(--text3); text-align: center; }
+/* Add form */
+.add-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-top: 8px; }
+.add-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.add-row input, .add-row select { font-family: 'DM Sans', sans-serif; font-size: 13px; border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 8px 12px; background: var(--bg); color: var(--text); outline: none; transition: border .15s; }
+.add-row input:focus, .add-row select:focus { border-color: var(--blue-mid); }
+.add-row input.flex1 { flex: 1; min-width: 160px; }
+.add-row input.w160 { width: 160px; }
+.add-row select.w130 { width: 130px; }
+.add-row select.w110 { width: 110px; }
+.btn-add { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 8px 16px; border-radius: var(--radius-sm); border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .15s; white-space: nowrap; }
+.btn-add.blue { background: var(--blue); color: #fff; }
+.btn-add.blue:hover { background: #1450890; filter: brightness(1.08); }
+.btn-add.teal { background: var(--teal); color: #fff; }
+.btn-add.teal:hover { filter: brightness(1.1); }
+.add-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.add-full { width: 100%; margin-bottom: 8px; }
+/* Agenda cards */
+.agenda-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--shadow); transition: box-shadow .15s; }
+.agenda-card:hover { box-shadow: var(--shadow-md); }
+.agenda-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.agenda-card-info { flex: 1; }
+.agenda-date-badge { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+.agenda-date-badge i { font-size: 13px; }
+.agenda-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.agenda-meta { font-size: 12px; color: var(--text2); display: flex; gap: 12px; flex-wrap: wrap; }
+.agenda-meta span { display: flex; align-items: center; gap: 4px; }
+.agenda-meta i { font-size: 13px; }
+.status-pill { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.s-agendado { background: var(--blue-bg); color: var(--blue); }
+.s-execucao { background: var(--amber-bg); color: var(--amber); }
+.s-concluido { background: var(--green-bg); color: var(--green); }
+.agenda-actions { display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 4px; }
+.btn-action { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all .15s; }
+.btn-action:hover { background: var(--surface2); color: var(--text); }
+.btn-action.danger:hover { background: var(--red-bg); color: var(--red); border-color: transparent; }
+.btn-action.advance { background: var(--teal-bg); color: var(--teal); border-color: transparent; }
+.btn-action.advance:hover { filter: brightness(.95); }
+/* Progress bar */
+.progress-wrap { margin: 6px 0 20px; }
+.progress-track { height: 5px; background: var(--surface2); border-radius: 20px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 20px; transition: width .4s ease; }
+.progress-fill.blue { background: var(--blue-mid); }
+.progress-fill.teal { background: var(--teal-mid); }
+.progress-label { font-size: 11px; color: var(--text3); margin-top: 5px; }
+/* Responsive */
+@media (max-width: 520px) {
+  .stats { grid-template-columns: repeat(3, 1fr); }
+  .stat-num { font-size: 20px; }
+  .add-row2 { grid-template-columns: 1fr; }
+  .add-row { flex-direction: column; }
+  .add-row input, .add-row select, .btn-add { width: 100%; }
+  .add-row input.w160, .add-row select.w130, .add-row select.w110 { width: 100%; }
+  .tab span { display: none; }
+}
+/* Divider */
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+/* Footer */
+.footer { text-align: center; font-size: 11px; color: var(--text3); margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1>Painel de gestão</h1>
+        <div class="header-date" id="dateLabel"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active-blue" id="tab-trafego" onclick="switchTab('trafego')">
+      <i class="ti ti-chart-bar" aria-hidden="true"></i><span>Agência de tráfego</span>
+    </button>
+    <button class="tab" id="tab-envelop" onclick="switchTab('envelop')">
+      <i class="ti ti-color-swatch" aria-hidden="true"></i><span>Envelopamento decorativo</span>
+    </button>
+  </div>
+
+  <!-- AGÊNCIA DE TRÁFEGO -->
+  <div class="panel active" id="panel-trafego">
+    <div class="stats">
+      <div class="stat"><div class="stat-num blue" id="t-clientes">0</div><div class="stat-label">Clientes</div></div>
+      <div class="stat"><div class="stat-num blue" id="t-hoje">0</div><div class="stat-label">Tarefas hoje</div></div>
+      <div class="stat"><div class="stat-num blue" id="t-pct">0%</div><div class="stat-label">Concluídas</div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill blue" id="t-bar" style="width:0%"></div></div>
+      <div class="progress-label" id="t-bar-label">Progresso das tarefas diárias</div>
+    </div>
+
+    <div class="sec-title"><i class="ti ti-refresh" aria-hidden="true"></i> Tarefas diárias</div>
+    <div class="task-group">
+      <div class="task-group-head"><i class="ti ti-sun" aria-hidden="true"></i> Recorrentes — todo dia</div>
+      <div id="tg-diario"></div>
+    </div>
+
+    <div class="sec-title"><i class="ti ti-calendar-week" aria-hidden="true"></i> Tarefas semanais</div>
+    <div class="task-group">
+      <div class="task-group-head"><i class="ti ti-calendar" aria-hidden="true"></i> Esta semana</div>
+      <div id="tg-semanal"></div>
+    </div>
+
+    <div class="sec-title"><i class="ti ti-plus" aria-hidden="true"></i> Nova tarefa</div>
+    <div class="add-card">
+      <div class="add-row">
+        <input type="text" class="flex1" id="t-input" placeholder="Descrição da tarefa..." />
+        <select class="w130" id="t-cliente">
+          <option value="">— cliente —</option>
+          <option>Cliente A</option>
+          <option>Cliente B</option>
+          <option>Cliente C</option>
+          <option>Cliente D</option>
+        </select>
+        <select class="w110" id="t-freq">
+          <option value="diario">Diária</option>
+          <option value="semanal">Semanal</option>
+        </select>
+        <button class="btn-add blue" onclick="addTrafego()"><i class="ti ti-plus" aria-hidden="true"></i> Adicionar</button>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;display:flex;align-items:center;justify-content:flex-end;">
+      <button class="btn-action" onclick="resetDiario()" style="font-size:12px;">
+        <i class="ti ti-refresh" aria-hidden="true"></i> Reiniciar tarefas diárias
+      </button>
+    </div>
+  </div>
+
+  <!-- ENVELOPAMENTO -->
+  <div class="panel" id="panel-envelop">
+    <div class="stats">
+      <div class="stat"><div class="stat-num teal" id="e-pendentes">0</div><div class="stat-label">Pendentes</div></div>
+      <div class="stat"><div class="stat-num teal" id="e-semana">0</div><div class="stat-label">Esta semana</div></div>
+      <div class="stat"><div class="stat-num teal" id="e-concluido">0</div><div class="stat-label">Concluídos</div></div>
+    </div>
+
+    <div class="sec-title"><i class="ti ti-calendar-event" aria-hidden="true"></i> Agenda de serviços</div>
+    <div id="agenda-list"></div>
+
+    <div class="sec-title"><i class="ti ti-calendar-plus" aria-hidden="true"></i> Novo serviço</div>
+    <div class="add-card">
+      <input type="text" class="add-full" id="e-titulo" placeholder="Descrição do serviço (ex: Envelopamento sala — Cliente X)" style="font-family:'DM Sans',sans-serif;font-size:13px;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 12px;background:var(--bg);color:var(--text);outline:none;width:100%;margin-bottom:8px;">
+      <div class="add-row2">
+        <input type="date" id="e-data" style="font-family:'DM Sans',sans-serif;font-size:13px;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 12px;background:var(--bg);color:var(--text);outline:none;width:100%;">
+        <input type="text" id="e-local" placeholder="Local / endereço" style="font-family:'DM Sans',sans-serif;font-size:13px;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 12px;background:var(--bg);color:var(--text);outline:none;width:100%;">
+      </div>
+      <div class="add-row2" style="margin-top:8px;">
+        <input type="text" id="e-cliente" placeholder="Nome do cliente" style="font-family:'DM Sans',sans-serif;font-size:13px;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 12px;background:var(--bg);color:var(--text);outline:none;width:100%;">
+        <input type="text" id="e-valor" placeholder="Valor do serviço (R$)" style="font-family:'DM Sans',sans-serif;font-size:13px;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 12px;background:var(--bg);color:var(--text);outline:none;width:100%;">
+      </div>
+      <button class="btn-add teal" onclick="addAgenda()" style="margin-top:10px;">
+        <i class="ti ti-calendar-plus" aria-hidden="true"></i> Agendar serviço
+      </button>
+    </div>
+  </div>
+
+  <div class="footer">Painel de gestão pessoal · Dados salvos no dispositivo</div>
+</div>
+
+<script>
+const d = new Date();
+const opts = { weekday:'long', day:'numeric', month:'long', year:'numeric' };
+document.getElementById('dateLabel').textContent = d.toLocaleDateString('pt-BR', opts);
+
+function store(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
+function load(k, def) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch(e) { return def; } }
+
+let tTasks = load('pgv3_t', [
+  { id:1, text:'Verificar métricas de campanhas', cliente:'Cliente A', freq:'diario', done:false },
+  { id:2, text:'Otimizar anúncios ativos', cliente:'Cliente B', freq:'diario', done:false },
+  { id:3, text:'Responder relatórios de desempenho', cliente:'', freq:'semanal', done:false },
+  { id:4, text:'Reunião de alinhamento com clientes', cliente:'', freq:'semanal', done:false },
+]);
+let agenda = load('pgv3_a', [
+  { id:1, titulo:'Envelopamento sala de estar', cliente:'Família Souza', local:'Florianópolis', data:'2026-05-30', valor:'', status:'agendado' },
+  { id:2, titulo:'Revestimento decorativo cozinha', cliente:'Restaurante Bela Vista', local:'São José', data:'2026-06-02', valor:'R$ 850', status:'agendado' },
+]);
+
+function switchTab(t) {
+  ['trafego','envelop'].forEach(p => {
+    document.getElementById('panel-'+p).classList.remove('active');
+    document.getElementById('tab-'+p).className = 'tab';
+  });
+  document.getElementById('panel-'+t).classList.add('active');
+  document.getElementById('tab-trafego').className = 'tab' + (t==='trafego' ? ' active-blue' : '');
+  document.getElementById('tab-envelop').className = 'tab' + (t==='envelop' ? ' active-teal' : '');
+  renderAll();
+}
+
+function renderTrafego() {
+  const daily = tTasks.filter(t => t.freq === 'diario');
+  const weekly = tTasks.filter(t => t.freq === 'semanal');
+  function rows(arr, cls) {
+    if (!arr.length) return '<div class="empty">Nenhuma tarefa cadastrada.</div>';
+    return arr.map(t => `
+      <div class="task-row ${t.done ? 'done' : ''}">
+        <button class="btn-check ${t.done ? cls : ''}" onclick="toggleT(${t.id})" aria-label="marcar como concluída">
+          ${t.done ? '<i class="ti ti-check" aria-hidden="true"></i>' : ''}
+        </button>
+        <span class="task-name">${escHtml(t.text)}</span>
+        ${t.cliente ? `<span class="badge badge-blue">${escHtml(t.cliente)}</span>` : ''}
+        <button class="btn-del" onclick="delT(${t.id})" aria-label="remover tarefa"><i class="ti ti-x" aria-hidden="true"></i></button>
+      </div>`).join('');
+  }
+  document.getElementById('tg-diario').innerHTML = rows(daily, 'on-blue');
+  document.getElementById('tg-semanal').innerHTML = rows(weekly, 'on-blue');
+  const done = daily.filter(t => t.done).length;
+  const pct = daily.length ? Math.round(done / daily.length * 100) : 0;
+  document.getElementById('t-clientes').textContent = [...new Set(tTasks.filter(t => t.cliente).map(t => t.cliente))].length;
+  document.getElementById('t-hoje').textContent = daily.length;
+  document.getElementById('t-pct').textContent = pct + '%';
+  document.getElementById('t-bar').style.width = pct + '%';
+  document.getElementById('t-bar-label').textContent = `${done} de ${daily.length} tarefas diárias concluídas`;
+}
+
+function toggleT(id) { const t = tTasks.find(x => x.id === id); if (t) t.done = !t.done; store('pgv3_t', tTasks); renderTrafego(); }
+function delT(id) { tTasks = tTasks.filter(x => x.id !== id); store('pgv3_t', tTasks); renderTrafego(); }
+function resetDiario() {
+  if (!confirm('Reiniciar todas as tarefas diárias?')) return;
+  tTasks.filter(t => t.freq === 'diario').forEach(t => t.done = false);
+  store('pgv3_t', tTasks); renderTrafego();
+}
+function addTrafego() {
+  const txt = document.getElementById('t-input').value.trim();
+  const cli = document.getElementById('t-cliente').value;
+  const freq = document.getElementById('t-freq').value;
+  if (!txt) return;
+  tTasks.push({ id: Date.now(), text: txt, cliente: cli, freq, done: false });
+  document.getElementById('t-input').value = '';
+  store('pgv3_t', tTasks); renderTrafego();
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('t-input').addEventListener('keydown', e => { if (e.key === 'Enter') addTrafego(); });
+});
+
+const sLabel = { agendado:'Agendado', execucao:'Em execução', concluido:'Concluído' };
+const sPill = { agendado:'s-agendado', execucao:'s-execucao', concluido:'s-concluido' };
+const sNext = { agendado:'execucao', execucao:'concluido' };
+const sNextLabel = { agendado:'Iniciar serviço', execucao:'Marcar concluído' };
+
+function renderAgenda() {
+  const sorted = [...agenda].sort((a, b) => a.data.localeCompare(b.data));
+  const today = new Date(); today.setHours(0,0,0,0);
+  const weekEnd = new Date(today); weekEnd.setDate(today.getDate() + 6);
+  const semana = agenda.filter(a => { const ad = new Date(a.data+'T12:00:00'); return ad >= today && ad <= weekEnd; });
+  document.getElementById('e-pendentes').textContent = agenda.filter(a => a.status !== 'concluido').length;
+  document.getElementById('e-semana').textContent = semana.length;
+  document.getElementById('e-concluido').textContent = agenda.filter(a => a.status === 'concluido').length;
+  const list = document.getElementById('agenda-list');
+  if (!sorted.length) { list.innerHTML = '<div class="empty" style="text-align:center;padding:20px;color:var(--text3);">Nenhum serviço agendado.</div>'; return; }
+  list.innerHTML = sorted.map(a => `
+    <div class="agenda-card">
+      <div class="agenda-card-top">
+        <div class="agenda-card-info">
+          <div class="agenda-date-badge"><i class="ti ti-calendar" aria-hidden="true"></i>${fmtDate(a.data)}</div>
+          <div class="agenda-title">${escHtml(a.titulo)}</div>
+          <div class="agenda-meta">
+            ${a.cliente ? `<span><i class="ti ti-user" aria-hidden="true"></i>${escHtml(a.cliente)}</span>` : ''}
+            ${a.local ? `<span><i class="ti ti-map-pin" aria-hidden="true"></i>${escHtml(a.local)}</span>` : ''}
+            ${a.valor ? `<span><i class="ti ti-currency-dollar" aria-hidden="true"></i>${escHtml(a.valor)}</span>` : ''}
+          </div>
+        </div>
+        <span class="status-pill ${sPill[a.status]}">${sLabel[a.status]}</span>
+      </div>
+      <div class="agenda-actions">
+        ${a.status !== 'concluido' ? `<button class="btn-action advance" onclick="setStatus(${a.id},'${sNext[a.status]}')"><i class="ti ti-arrow-right" aria-hidden="true"></i> ${sNextLabel[a.status]}</button>` : ''}
+        <button class="btn-action danger" onclick="delA(${a.id})"><i class="ti ti-trash" aria-hidden="true"></i> Remover</button>
+      </div>
+    </div>`).join('');
+}
+
+function fmtDate(s) {
+  if (!s) return '—';
+  const [y,m,d] = s.split('-');
+  const wd = new Date(s+'T12:00:00').toLocaleDateString('pt-BR', { weekday:'short' });
+  return `${wd}, ${d}/${m}/${y}`;
+}
+function setStatus(id, st) { const a = agenda.find(x => x.id === id); if (a) a.status = st; store('pgv3_a', agenda); renderAgenda(); }
+function delA(id) { if (!confirm('Remover este serviço?')) return; agenda = agenda.filter(x => x.id !== id); store('pgv3_a', agenda); renderAgenda(); }
+function addAgenda() {
+  const titulo = document.getElementById('e-titulo').value.trim();
+  const data = document.getElementById('e-data').value;
+  if (!titulo || !data) { alert('Preencha ao menos o serviço e a data.'); return; }
+  agenda.push({
+    id: Date.now(),
+    titulo,
+    data,
+    local: document.getElementById('e-local').value.trim(),
+    cliente: document.getElementById('e-cliente').value.trim(),
+    valor: document.getElementById('e-valor').value.trim(),
+    status: 'agendado'
+  });
+  ['e-titulo','e-data','e-local','e-cliente','e-valor'].forEach(id => document.getElementById(id).value = '');
+  store('pgv3_a', agenda); renderAgenda();
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function renderAll() { renderTrafego(); renderAgenda(); }
+renderAll();
+</script>
+</body>
+</html>
